@@ -1,4 +1,10 @@
 {% extends 'chitter\base.html' %}
 {% block content %}
     <h1>Meeps!</h1>
+    {% for meep in meeps %}
+        <div class="alert alert-info" role="alert">
+            {{meep.body}}
+        </div>
+        <br><br>
+    {% endfor %}
 {% endblock %}

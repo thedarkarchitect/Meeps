@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from .models import Profile
+from .models import Profile, Meep
 
 # Register your models here.
 admin.site.unregister(Group)
+admin.site.register(Meep)
 
 #mix profile info into user info so they are the same 
 class ProfileInline(admin.StackedInline):
