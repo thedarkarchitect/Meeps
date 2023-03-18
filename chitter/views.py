@@ -21,3 +21,15 @@ def  profile_list(request):
         messages.success(request, ("You Must be Logged in to view this page..."))
         return redirect('home')
     
+def profile_page(request, pk):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(pk=pk)
+
+        context = {
+            'profile':profile
+        }
+        return render(request, 'chitter\profile_page.html', context)
+    else:
+        messages.success(request, ("You Must be Logged in to view this page..."))
+        return redirect('home')
+    

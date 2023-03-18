@@ -14,11 +14,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'profile_list' %}">Profile List</a>
-        </li>
-    
+            <!-- //to avoid an error bring this up only when the person is logged in -->
+        {% if user.is_authenticated %}    
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' request.user.id %}">myProfile</a>
+            </li>
+        {% endif %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile_list' %}">Profile List</a>
+            </li>
         </ul>
         <form class="d-flex" role="search">
         <input
