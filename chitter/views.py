@@ -1,8 +1,11 @@
 from django.shortcuts import render,redirect
 from .models import Profile, Meep
 from django.contrib import messages
-from .forms import MeepForm
+from .forms import MeepForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
+#register auth form
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
 
 # Create your views here.
 def home(request):
@@ -80,4 +83,26 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    messags.success(request, (You have Been Logged Out. please come back soon.))
+    messages.success(request, ("You have Been Logged Out. please come back soon."))
+
+def register_user(request):
+    form = RegisterForm()
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #next we must clean out data  
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            first_name = form.cleaned_data['first name']
+            last_name = form.cleaned_data['last name']
+            email = form.cleaned_data['email']
+
+            #login user
+            user = authenticate(username=username, password=password)
+            login(request, user)#will login us in if everything is alright
+            messages.success(request, ("You have successfully registered!"))
+            return redirect('home')
+        
+    else:
+        return render(request, "chitter/register.html", {'form':form})

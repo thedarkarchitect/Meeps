@@ -1,0 +1,14 @@
+{% extends 'chitter\base.html' %}
+{% block content %}
+<div class="col-md-6 offset-md-3" >
+    <h1>Register</h1>
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        {{form.as_p}}
+        <br>
+        <button type="subimt" class="btn btn-outline-secondary">Register</button>
+    </form>
+
+</div>
+
+{% endblock %}
