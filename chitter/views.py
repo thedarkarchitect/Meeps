@@ -19,17 +19,20 @@ def  profile_list(request):
 
     if request.user.is_authenticated:
         profiles = Profile.objects.exclude(user=request.user)#this excludes the user logged in at the moment
-        return render(request, 'chitter\profile_list.html', {"profiles" : profiles})
+        context = {
+            "profiles":profiles
+        }
+        return render(request, 'chitter\profile_list.html', context)
     else:
         messages.success(request, ("You Must be Logged in to view this page..."))
         return redirect('home')
     
 def profile_page(request, pk):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(pk=pk)
-        meeps = Meep.objects.filter(pk=pk)#meeps for user only
+        profile = Profile.objects.get(pk=pk)#this will get profiles of people you click on based on their id
+        meeps = Meep.objects.filter(pk=pk)#meeps for user only, meeps can't be got cuz they are more than one most times so they are filtered
         #post form logic
-        if request.method == 'POST':
+        if request.method == 'POST':#this is for the follow form to follow and unfollow profiles
             #current user ID
             current_user_profile = request.user.profile
             action = request.POST['follow']#get form data
@@ -43,7 +46,6 @@ def profile_page(request, pk):
         context = {
             'profile':profile,
             'meeps':meeps
-
         }
         return render(request, 'chitter\profile_page.html', context)
     else:
