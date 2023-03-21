@@ -1,0 +1,27 @@
+{% extends 'chitter\base.html' %}
+{% block content %}
+
+{% if user.is_authenticated %}
+<h1>You're Already Logged In!</h1>
+{% else %}
+<div class="contatiner container-sm">
+    <div>
+        <h1>login</h1>
+        <br>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="email" class="form-control" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn btn-outline-secondary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{%endblock%}

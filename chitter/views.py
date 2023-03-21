@@ -1,17 +1,27 @@
 from django.shortcuts import render,redirect
 from .models import Profile, Meep
 from django.contrib import messages
+from .forms import MeepForm
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
+        form = MeepForm(request.POST or None)
+        if request.method == "POST":
+            if form.is_valid():
+                meep = form.save(commit=False)#don't save form untill you sure the user is authenticated or logged in
+                meep.user = request.user
+                meep.save()
+                messages.success(request, ("Your Meep Has Been Posted! .."))
+                return redirect('home')
+
         meeps = Meep.objects.all().order_by("-created_at")#orders from the last entered meep
-
-    context ={
-        "meeps" : meeps
-    }
-    return render(request, 'chitter\home.html', context)
-
+        return render(request, 'chitter\home.html', {"meeps" : meeps, "form":form})
+    else:
+        meeps = Meep.objects.all().order_by("-created_at")#shows meeps on site but not the form to enter meeps
+        return render(request, 'chitter\home.html', {"meeps" : meeps})
+    
 def  profile_list(request):
     context = {
         "messages":messages
@@ -52,3 +62,22 @@ def profile_page(request, pk):
         messages.success(request, ("You Must be Logged in to view this page..."))
         return redirect('home')
     
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']#this is the name of the field we getting the username from by using the field  name
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, ("You Have been logged in successfully! "))
+            return redirect('home')
+        else:
+            messages.success(request, ("Error logging in, try again with correct username or password "))
+            return redirect('login')
+    else:
+        return render(request, 'chitter/login.html', {})
+
+def logout_user(request):
+    logout(request)
+    messags.success(request, (You have Been Logged Out. please come back soon.))

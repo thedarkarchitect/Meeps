@@ -11,6 +11,10 @@
                     {% for meep in meeps %}
                         <div class="alert alert-info" role="alert">
                             {{meep.body}}
+                            <br>
+                            <small class="text-muted">
+                                ({{meep.created_at}}) by @{{meep.user.username}}
+                            </small>
                         </div>
                     {% endfor %}
                 {% endif %}
