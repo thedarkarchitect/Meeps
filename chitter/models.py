@@ -27,6 +27,7 @@ class Profile(models.Model):
                                     blank=True
                                     )
     date_modified = models.DateTimeField(User, auto_now=True)#gives current profile
+    profile_image = models.ImageField(null=True, blank=True, upload_to="images/")#its not a must to have profile pic
     
     def __str__(self):
         return self.user.username

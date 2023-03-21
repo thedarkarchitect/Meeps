@@ -1,11 +1,12 @@
 from django.shortcuts import render,redirect
 from .models import Profile, Meep
 from django.contrib import messages
-from .forms import MeepForm, RegisterForm
+from .forms import MeepForm, RegisterForm, ProfilePicForm
 from django.contrib.auth import authenticate, login, logout
 #register auth form
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
@@ -106,3 +107,21 @@ def register_user(request):
         
     else:
         return render(request, "chitter/register.html", {'form':form})
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)#this grabs the user
+        profile_user = Profile.objects.get(user__id=request.user.id)#this grabs the user profile
+
+        user_form = RegisterForm(request.POST or None, request.FILES or None, instance=current_user)#this is the handling both data and files passed to it 
+        profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            login(request, current_user)
+            messages.success(request, ("Your profile has been updated"))
+        return render(request, "chitter/update.html", {'user_form':user_form, 'profile_form':profile_form})
+    else:
+        messages.success(request, ("You must be logged in to view the page "))
+        redirect('home')
+
